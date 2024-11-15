@@ -77,6 +77,19 @@ function Multistep() {
             }
           })}
         </div>
+        
+        {/* submit */}
+        <div className="flex justify-end py-5">
+            <button
+                type="submit"
+                className={`${
+                  currentStep === totalSteps
+                    ? 'block'
+                    : 'hidden'
+                } bg-blue-600 text-white font-medium rounded-lg text-sm px-5 py-2.5`}>
+                Kirim
+              </button>
+          </div>
 
         {/* Navigation Buttons */}
         <div className="flex justify-between py-5">
