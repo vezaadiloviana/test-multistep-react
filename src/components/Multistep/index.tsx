@@ -1,6 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import data from "../../data/response.json";
-import TextField from "../Input/TextField";  
+import TextField from "../Input/TextField";
 import Radio from "../Input/Radio";
 import TextArea from "../Input/TextArea";
 import Select from "../Input/Select";
@@ -22,6 +22,7 @@ type Field = {
 
 function Multistep() {
   const [currentStep, setCurrentStep] = useState<number>(1);
+  const [formData, setFormData] = useState<any>({}); 
   const totalSteps = (data as Step[]).length;
   const steps: Step[] = data as Step[];
 
@@ -35,6 +36,13 @@ function Multistep() {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, field: string) => {
+    setFormData({
+      ...formData,
+      [field]: e.target.value,
+    });
   };
 
   const currentData = steps[currentStep - 1];
@@ -65,31 +73,66 @@ function Multistep() {
           {currentData.fields.map((field, index) => {
             switch (field.type) {
               case "textfield":
-                return <TextField key={index} label={field.label} placeholder={field.placeholder} required={field.required} />;
+                return (
+                  <TextField
+                    key={index}
+                    label={field.label}
+                    placeholder={field.placeholder}
+                    required={field.required}
+                    value={formData[field.label] || ""}
+                    onChange={(e) => handleChange(e, field.label)}
+                  />
+                );
               case "radio":
-                return <Radio key={index} label={field.label} options={field.options!} required={field.required} />;
+                return (
+                  <Radio
+                    key={index}
+                    label={field.label}
+                    options={field.options!}
+                    required={field.required}
+                    selectedValue={formData[field.label] || ""}
+                    onChange={(e) => handleChange(e, field.label)}
+                  />
+                );
               case "textarea":
-                return <TextArea key={index} label={field.label} placeholder={field.placeholder} required={field.required} />;
+                return (
+                  <TextArea
+                    key={index}
+                    label={field.label}
+                    placeholder={field.placeholder}
+                    required={field.required}
+                    value={formData[field.label] || ""}
+                    onChange={(e) => handleChange(e, field.label)}
+                  />
+                );
               case "autocomplete":
-                return <Select key={index} label={field.label} options={field.options!} placeholder={field.placeholder} required={field.required} />;
+                return (
+                  <Select
+                    key={index}
+                    label={field.label}
+                    options={field.options!}
+                    placeholder={field.placeholder}
+                    required={field.required}
+                    value={formData[field.label] || ""}
+                    onChange={(e) => handleChange(e, field.label)}
+                  />
+                );
               default:
                 return null;
             }
           })}
         </div>
-        
+
         {/* submit */}
         <div className="flex justify-end py-5">
-            <button
-                type="submit"
-                className={`${
-                  currentStep === totalSteps
-                    ? 'block'
-                    : 'hidden'
-                } bg-blue-600 text-white font-medium rounded-lg text-sm px-5 py-2.5`}>
-                Kirim
-              </button>
-          </div>
+          <button
+            type="submit"
+            className={`${
+              currentStep === totalSteps ? "block" : "hidden"
+            } bg-blue-600 text-white font-medium rounded-lg text-sm px-5 py-2.5`}>
+            Kirim
+          </button>
+        </div>
 
         {/* Navigation Buttons */}
         <div className="flex justify-between py-5">
